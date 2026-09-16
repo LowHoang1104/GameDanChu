@@ -174,6 +174,12 @@ public class GameHub : Hub
             return;
         }
 
+        if (room.Status != GameStatus.Lobby)
+        {
+            await Clients.Caller.SendAsync("Error", "Game đã bắt đầu, bạn không thể tham gia nữa!");
+            return;
+        }
+
         var player = new Player
         {
             Name = playerName,
