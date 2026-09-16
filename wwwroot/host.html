@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host - Game Dân Chủ</title>
+    <meta name="description" content="Giao diện Host điều khiển game biểu quyết">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Connection Status -->
+    <div class="connection-status" id="connection-status">
+        <span class="connection-dot" id="connection-dot"></span>
+        <span id="connection-text">Đang kết nối...</span>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Tạo phòng
+         ═══════════════════════════════════════════ -->
+    <div id="section-create" class="host-main" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;">
+        <div class="glass-card" style="max-width: 500px; width: 100%; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">🗳️</div>
+            <h1 class="page-title">Game Dân Chủ</h1>
+            <p class="page-subtitle">Tạo phòng game để bắt đầu</p>
+            <button class="btn btn-warning btn-xl" id="btn-create-room" style="width: 100%;">
+                🎮 Tạo Phòng Game
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Header (hiện khi đã tạo phòng)
+         ═══════════════════════════════════════════ -->
+    <header class="host-header hidden" id="host-header">
+        <div class="host-header-left">
+            <span class="host-header-title">🗳️ Game Dân Chủ</span>
+            <span class="host-header-room" id="header-room-code">----</span>
+        </div>
+        <div class="host-header-stats">
+            <span class="host-header-stat">👥 Tổng: <strong id="header-total">0</strong></span>
+            <span class="host-header-stat">✅ Active: <strong id="header-active">0</strong></span>
+            <span class="host-header-stat">❌ Loại: <strong id="header-eliminated">0</strong></span>
+            <span class="host-header-stat" id="header-round-badge"></span>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Lobby
+         ═══════════════════════════════════════════ -->
+    <div id="section-lobby" class="host-main hidden">
+        <div class="glass-card" style="text-align: center;">
+            <div class="room-code-display">
+                <div class="room-code-label">Mã phòng</div>
+                <div class="room-code-value" id="lobby-room-code">----</div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="qr-container">
+                <div class="qr-code-wrapper" id="qr-code"></div>
+                <div class="qr-url" id="qr-url"></div>
+            </div>
+
+            <p class="page-subtitle">Người chơi mở trình duyệt và quét QR hoặc nhập mã phòng</p>
+        </div>
+
+        <!-- Danh sách người chơi -->
+        <div class="glass-card" style="margin-top: 16px;">
+            <h3 style="margin-bottom: 12px;">
+                👥 Người chơi đã tham gia: <strong id="lobby-player-count">0</strong>
+            </h3>
+            <div class="player-list" id="lobby-player-list"></div>
+        </div>
+
+        <!-- Nút Start -->
+        <div class="control-buttons" style="margin-top: 20px;">
+            <button class="btn btn-success btn-xl" id="btn-start-game" disabled>
+                🚀 Bắt Đầu Game
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Round Setup (nhập câu hỏi)
+         ═══════════════════════════════════════════ -->
+    <div id="section-round-setup" class="host-main hidden">
+        <div class="glass-card">
+            <h2 style="text-align: center; margin-bottom: 20px;">
+                📝 Thiết lập Vòng <span id="setup-round-number">1</span>
+            </h2>
+            <div class="round-setup-form">
+                <div class="input-group">
+                    <label for="input-question-title">Tiêu đề</label>
+                    <input type="text" class="input-field" id="input-question-title"
+                           placeholder="Ví dụ: Vấn đề 1" value="Câu hỏi biểu quyết">
+                </div>
+                <div class="input-group">
+                    <label for="input-question">Nội dung câu hỏi</label>
+                    <input type="text" class="input-field" id="input-question"
+                           placeholder="Ví dụ: Bạn ủng hộ phương án nào?">
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="input-option-a">🔴 Phương án A</label>
+                        <input type="text" class="input-field" id="input-option-a"
+                               placeholder="Ví dụ: Đồng ý" value="TRÁI">
+                    </div>
+                    <div class="input-group">
+                        <label for="input-option-b">🔵 Phương án B</label>
+                        <input type="text" class="input-field" id="input-option-b"
+                               placeholder="Ví dụ: Không đồng ý" value="PHẢI">
+                    </div>
+                </div>
+                <div class="control-buttons" style="margin-top: 24px;">
+                    <button class="btn btn-success btn-xl" id="btn-start-round">
+                        ▶️ Bắt Đầu Vòng
+                    </button>
+                    <button class="btn btn-warning btn-lg" id="btn-start-final">
+                        🏆 Bắt Đầu Vòng Cuối
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Round Active
+         ═══════════════════════════════════════════ -->
+    <div id="section-round-active" class="host-main hidden">
+        <div class="round-badge" id="active-round-badge" style="margin: 0 auto 16px;">
+            Vòng 1
+        </div>
+
+        <!-- Câu hỏi -->
+        <div class="glass-card question-card">
+            <div class="question-title" id="active-question-title">Câu hỏi</div>
+            <div class="question-text" id="active-question-text">Nội dung câu hỏi</div>
+        </div>
+
+        <!-- Vote Chart -->
+        <div class="glass-card vote-chart">
+            <div class="vote-bar-container">
+                <div class="vote-bar vote-bar-a" id="vote-bar-a" style="flex-basis: 50%;">
+                    <span class="vote-bar-count" id="vote-count-a">0</span>
+                    <span class="vote-bar-label" id="vote-label-a">TRÁI</span>
+                </div>
+                <div class="vote-bar vote-bar-b" id="vote-bar-b" style="flex-basis: 50%;">
+                    <span class="vote-bar-count" id="vote-count-b">0</span>
+                    <span class="vote-bar-label" id="vote-label-b">PHẢI</span>
+                </div>
+            </div>
+            <div class="vote-labels">
+                <div class="vote-label-item">
+                    <span class="vote-label-dot dot-a"></span>
+                    <span id="chart-label-a">Phương án A</span>
+                </div>
+                <div class="vote-label-item" id="vote-progress">
+                    Đã vote: <strong id="vote-total">0</strong> / <strong id="vote-of-active">0</strong>
+                </div>
+                <div class="vote-label-item">
+                    <span id="chart-label-b">Phương án B</span>
+                    <span class="vote-label-dot dot-b"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Round Button -->
+        <div class="control-buttons">
+            <button class="btn btn-danger btn-lg" id="btn-end-round">
+                ⏹️ Kết Thúc Vòng
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Round Result
+         ═══════════════════════════════════════════ -->
+    <div id="section-round-result" class="host-main hidden">
+        <div class="glass-card" style="text-align: center;">
+            <h2 style="margin-bottom: 16px;">📊 Kết Quả Vòng <span id="result-round-number">1</span></h2>
+
+            <!-- Vote Chart (result) -->
+            <div class="vote-chart">
+                <div class="vote-bar-container" style="height: 100px;">
+                    <div class="vote-bar vote-bar-a" id="result-bar-a" style="flex-basis: 50%;">
+                        <span class="vote-bar-count" id="result-count-a">0</span>
+                        <span class="vote-bar-label" id="result-label-a">TRÁI</span>
+                    </div>
+                    <div class="vote-bar vote-bar-b" id="result-bar-b" style="flex-basis: 50%;">
+                        <span class="vote-bar-count" id="result-count-b">0</span>
+                        <span class="vote-bar-label" id="result-label-b">PHẢI</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Winner -->
+            <div class="winner-display">
+                <div class="winner-label">Phương án chiến thắng</div>
+                <div class="winner-value" id="result-winner-text">---</div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="result-active-count">0</div>
+                    <div class="stat-label">Đi tiếp</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="result-eliminated-count">0</div>
+                    <div class="stat-label">Bị loại</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Round / Final buttons -->
+        <div class="control-buttons" style="margin-top: 20px;">
+            <button class="btn btn-primary btn-xl" id="btn-next-round">
+                ➡️ Vòng Tiếp Theo
+            </button>
+            <button class="btn btn-ghost btn-lg" id="btn-reset-game">
+                🔄 Reset Game
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Final Result
+         ═══════════════════════════════════════════ -->
+    <div id="section-final-result" class="host-main hidden">
+        <div class="glass-card final-result">
+            <div class="final-result-title">🏆 Kết Quả Biểu Quyết Cuối Cùng</div>
+            <div class="final-result-winner" id="final-winner-text">---</div>
+            <div class="final-result-score" id="final-score-text">0 - 0</div>
+
+            <!-- Vote Chart -->
+            <div class="vote-chart" style="max-width: 600px; margin: 20px auto;">
+                <div class="vote-bar-container" style="height: 100px;">
+                    <div class="vote-bar vote-bar-a" id="final-bar-a" style="flex-basis: 50%;">
+                        <span class="vote-bar-count" id="final-count-a">0</span>
+                        <span class="vote-bar-label" id="final-label-a">A</span>
+                    </div>
+                    <div class="vote-bar vote-bar-b" id="final-bar-b" style="flex-basis: 50%;">
+                        <span class="vote-bar-count" id="final-count-b">0</span>
+                        <span class="vote-bar-label" id="final-label-b">B</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-buttons" style="margin-top: 20px;">
+            <button class="btn btn-ghost btn-lg" id="btn-reset-game-final">
+                🔄 Reset Game
+            </button>
+        </div>
+    </div>
+
+    <!-- Celebration particles container -->
+    <div class="celebration hidden" id="celebration"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="/js/host.js"></script>
+</body>
+</html>

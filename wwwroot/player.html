@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Player - Game Dân Chủ</title>
+    <meta name="description" content="Tham gia game biểu quyết tương tác">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="player-body">
+    <!-- Connection Status -->
+    <div class="connection-status" id="connection-status">
+        <span class="connection-dot" id="connection-dot"></span>
+        <span id="connection-text">Đang kết nối...</span>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Join Room
+         ═══════════════════════════════════════════ -->
+    <div id="section-join" class="player-container">
+        <div class="join-screen">
+            <div style="font-size: 3rem;">🗳️</div>
+            <h1 class="page-title" style="font-size: 1.6rem;">Game Dân Chủ</h1>
+            <p class="page-subtitle" style="margin-bottom: 8px;">Nhập tên và mã phòng để tham gia</p>
+
+            <div style="width: 100%; max-width: 320px;">
+                <div class="input-group">
+                    <input type="text" class="input-field" id="input-player-name"
+                           placeholder="Tên của bạn" maxlength="20" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <input type="text" class="input-field room-code-input" id="input-room-code"
+                           placeholder="MÃ PHÒNG" maxlength="6" autocomplete="off">
+                </div>
+                <button class="btn btn-primary btn-lg" id="btn-join" style="width: 100%;">
+                    🚀 Tham Gia
+                </button>
+                <div id="join-error" style="color: var(--danger); text-align: center; margin-top: 12px; font-size: 0.9rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Waiting (Lobby)
+         ═══════════════════════════════════════════ -->
+    <div id="section-waiting" class="player-container hidden">
+        <div class="status-message animate-fade-in">
+            <div class="status-icon">⏳</div>
+            <div class="status-text">Đang chờ Host bắt đầu...</div>
+            <div class="status-subtext">
+                Phòng: <strong id="waiting-room-code">----</strong><br>
+                Xin chào, <strong id="waiting-player-name">---</strong>!<br><br>
+                <span id="waiting-player-count">0</span> người đã tham gia
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Voting
+         ═══════════════════════════════════════════ -->
+    <div id="section-voting" class="player-container hidden" style="justify-content: stretch; padding-top: 12px; padding-bottom: 12px;">
+        <!-- Round & Question -->
+        <div style="text-align: center; margin-bottom: 8px;">
+            <div class="round-badge" id="voting-round-badge">Vòng 1</div>
+        </div>
+        <div class="question-card glass-card" style="padding: 16px; margin: 0 0 8px 0;">
+            <div class="question-title" id="voting-question-title">Câu hỏi</div>
+            <div class="question-text" id="voting-question-text" style="font-size: 1.15rem;">Nội dung</div>
+        </div>
+
+        <!-- Vote Buttons -->
+        <div class="vote-buttons" id="vote-buttons-container">
+            <button class="vote-btn vote-btn-a" id="btn-vote-a">
+                <span class="vote-btn-icon">🔴</span>
+                <span class="vote-btn-text" id="vote-text-a">TRÁI</span>
+            </button>
+            <button class="vote-btn vote-btn-b" id="btn-vote-b">
+                <span class="vote-btn-icon">🔵</span>
+                <span class="vote-btn-text" id="vote-text-b">PHẢI</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Voted (đã vote, chờ kết quả)
+         ═══════════════════════════════════════════ -->
+    <div id="section-voted" class="player-container hidden">
+        <div class="voted-indicator">
+            <div class="voted-check">✓</div>
+            <div class="status-text">Đã bình chọn!</div>
+            <div class="status-subtext">
+                Bạn đã chọn: <strong id="voted-choice">---</strong><br>
+                Đang chờ kết quả...
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Round Result (cho player)
+         ═══════════════════════════════════════════ -->
+    <div id="section-player-result" class="player-container hidden">
+        <div class="status-message animate-bounce-in">
+            <div class="status-icon" id="player-result-icon">🎉</div>
+            <div class="status-text" id="player-result-text">Kết quả</div>
+            <div class="status-subtext" id="player-result-subtext">Chi tiết</div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Eliminated
+         ═══════════════════════════════════════════ -->
+    <div id="section-eliminated" class="player-container hidden">
+        <div class="eliminated-overlay animate-fade-in">
+            <div class="status-icon">😢</div>
+            <div class="status-text status-loser" id="eliminated-text">Bạn đã dừng cuộc chơi</div>
+            <div class="eliminated-round" id="eliminated-round-text">Dừng ở Vòng 1</div>
+            <div class="status-subtext" style="margin-top: 16px;">
+                Cảm ơn bạn đã tham gia!<br>
+                Hãy theo dõi kết quả trên màn hình chính.
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         SECTION: Final Result (cho player)
+         ═══════════════════════════════════════════ -->
+    <div id="section-final-result" class="player-container hidden">
+        <div class="status-message animate-bounce-in">
+            <div class="status-icon">🏆</div>
+            <div class="status-text" style="color: var(--accent-gold);">Kết Quả Cuối Cùng</div>
+            <div class="status-subtext" id="player-final-result-text">---</div>
+        </div>
+    </div>
+
+    <!-- Celebration particles -->
+    <div class="celebration hidden" id="celebration"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="/js/player.js"></script>
+</body>
+</html>

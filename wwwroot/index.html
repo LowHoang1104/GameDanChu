@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Dân Chủ - Biểu Quyết Tương Tác</title>
+    <meta name="description" content="Mini game biểu quyết tương tác realtime cho bài thuyết trình Dân chủ và Nhà nước pháp quyền XHCN Việt Nam">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            text-align: center;
+            padding: 24px;
+            gap: 32px;
+        }
+        .landing-logo {
+            font-size: 5rem;
+            animation: bounceIn 0.8s ease;
+        }
+        .landing-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-amber), var(--option-a));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .landing-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            line-height: 1.6;
+        }
+        .landing-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .landing-buttons .btn {
+            width: 100%;
+            padding: 18px 24px;
+            font-size: 1.15rem;
+        }
+        .landing-footer {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-page">
+        <div class="landing-logo">🗳️</div>
+        <h1 class="landing-title">Game Dân Chủ</h1>
+        <p class="landing-desc">
+            Mini game biểu quyết tương tác<br>
+            <em>Dân chủ & Nhà nước pháp quyền XHCN Việt Nam</em>
+        </p>
+        <div class="landing-buttons">
+            <a href="/host.html" class="btn btn-warning btn-lg" id="btn-host">
+                🖥️ Tạo Game (Host)
+            </a>
+            <a href="/player.html" class="btn btn-primary btn-lg" id="btn-player">
+                📱 Tham Gia Game
+            </a>
+        </div>
+        <div class="landing-footer">
+            Powered by ASP.NET Core + SignalR
+        </div>
+    </div>
+</body>
+</html>
